@@ -1,19 +1,21 @@
 import React, { ChangeEvent, useState } from 'react';
 import { Transaction } from '../../types';
 
-const INITIAL_INPUTS = {
-    date: new Date().toDateString(),
+const getInitialValues = () => ({
+    id: new Date().getTime(),
+    date: new Date().toISOString().split('T')[0],
     srcAsset: 'EUR',
     destAsset: 'BTC',
-    amount: 0.01,
-};
+    srcAmount: 0.01,
+    destAmount: 0.01,
+});
 
 interface Props {
     onNewTransaction: (newTransaction: Transaction) => void;
 }
 
 export default function Form({ onNewTransaction }: Props): JSX.Element {
-    const [inputs, setInputs] = useState<Transaction>(INITIAL_INPUTS);
+    const [inputs, setInputs] = useState<Transaction>(getInitialValues());
 
     const handleChange = ({ target }: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         setInputs((state) => ({ ...state, [target.name]: target.value }));
@@ -23,7 +25,7 @@ export default function Form({ onNewTransaction }: Props): JSX.Element {
         event.preventDefault();
         onNewTransaction(inputs);
 
-        setInputs(INITIAL_INPUTS);
+        setInputs(getInitialValues());
     };
 
     const renderOptionList = () => (
@@ -37,34 +39,48 @@ export default function Form({ onNewTransaction }: Props): JSX.Element {
 
     return (
         <form onSubmit={handleSubmit}>
-            <label>
+            <label htmlFor="date">
                 Date:
-                <input type="date" name="date" onChange={handleChange} value={inputs.date} />
+                <input type="date" name="date" id="date" onChange={handleChange} value={inputs.date} />
             </label>
 
-            <label>
+            <label htmlFor="srcAsset">
                 Source Asset:
-                <select name="srcAsset" onChange={handleChange} value={inputs.srcAsset}>
+                <select name="srcAsset" id="srcAsset" onChange={handleChange} value={inputs.srcAsset}>
                     {renderOptionList()}
                 </select>
             </label>
 
-            <label>
-                Destination Asset:
-                <select name="destAsset" onChange={handleChange} value={inputs.destAsset}>
-                    {renderOptionList()}
-                </select>
-            </label>
-
-            <label>
-                Amount:
+            <label htmlFor="srcAmount">
+                Source Amount:
                 <input
                     type="number"
-                    name="amount"
+                    name="srcAmount"
+                    id="srcAmount"
                     step="0.00000001"
                     min={0}
                     onChange={handleChange}
-                    value={inputs.amount}
+                    value={inputs.srcAmount}
+                />
+            </label>
+
+            <label htmlFor="destAsset">
+                Destination Asset:
+                <select name="destAsset" id="destAsset" onChange={handleChange} value={inputs.destAsset}>
+                    {renderOptionList()}
+                </select>
+            </label>
+
+            <label htmlFor="destAmount">
+                Destination Amount:
+                <input
+                    type="number"
+                    name="destAmount"
+                    id="destAmount"
+                    step="0.00000001"
+                    min={0}
+                    onChange={handleChange}
+                    value={inputs.destAmount}
                 />
             </label>
 

@@ -3,19 +3,26 @@ import { Transaction } from '../../types';
 
 interface Props {
     children: Transaction[];
+    onTransactionDelete: (transactionId: number) => void;
 }
 
-export default function Table({ children }: Props): JSX.Element {
+export default function Table({ children, onTransactionDelete }: Props): JSX.Element {
     const renderTableRows = () => (
         <tbody>
             {children.map((transaction: Transaction) => (
-                    <tr>
-                        <td>{transaction.date}</td>
-                        <td>{transaction.srcAsset}</td>
-                        <td>{transaction.destAsset}</td>
-                        <td>{transaction.amount}</td>
-                    </tr>
-                ))}
+                <tr key={transaction.id}>
+                    <td>{transaction.date}</td>
+                    <td>{transaction.srcAsset}</td>
+                    <td>{transaction.srcAmount}</td>
+                    <td>{transaction.destAsset}</td>
+                    <td>{transaction.destAmount}</td>
+                    <td>
+                        <button type="button" onClick={() => onTransactionDelete(transaction.id)}>
+                            Delete
+                        </button>
+                    </td>
+                </tr>
+            ))}
         </tbody>
     );
 
@@ -25,8 +32,9 @@ export default function Table({ children }: Props): JSX.Element {
                 <tr>
                     <th>Date</th>
                     <th>Source Asset</th>
+                    <th>Source Amount</th>
                     <th>Destination Asset</th>
-                    <th>Amount</th>
+                    <th>Destination Amount</th>
                 </tr>
             </thead>
 

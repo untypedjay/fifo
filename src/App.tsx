@@ -5,16 +5,27 @@ import Form from './components/Form/Form';
 import Table from './components/Table/Table';
 
 export default function App(): JSX.Element {
-    const [transactions, setTransactions] = useLocalStorage('transactions', []);
+    const [transactions, setTransactions] = useLocalStorage<Transaction[]>('transactions', []);
 
     const handleNewTransaction = (newTransaction: Transaction) => {
         setTransactions(transactions.concat(newTransaction));
     };
 
+    const handleTransactionDelete = (transactionId: number) => {
+        const transactionIndex = transactions.findIndex((transaction: Transaction) => transaction.id === transactionId);
+        if (transactionIndex !== -1) {
+            const newTransactions = [...transactions];
+            newTransactions.splice(transactionIndex, 1);
+            setTransactions(newTransactions);
+        } else {
+            throw Error(`Transaction ${transactionId} could not be found!`);
+        }
+    };
+
     return (
         <div>
             <Form onNewTransaction={handleNewTransaction} />
-            <Table>{transactions}</Table>
+            <Table onTransactionDelete={handleTransactionDelete}>{transactions}</Table>
 
             <div>
                 <h3>Total Assets</h3>
